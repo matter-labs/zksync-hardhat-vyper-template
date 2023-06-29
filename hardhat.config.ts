@@ -4,6 +4,8 @@ import { HardhatUserConfig } from "hardhat/config";
 import "@matterlabs/hardhat-zksync-vyper";
 import "@matterlabs/hardhat-zksync-deploy";
 
+import "@matterlabs/hardhat-zksync-verify";
+
 // dynamically changes endpoints for local tests
 const zkSyncTestnet =
   process.env.NODE_ENV == "test"

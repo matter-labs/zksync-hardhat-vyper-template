@@ -1,25 +1,16 @@
 # @version ^0.3.3
 # vim: ft=python
 
-owner: address
-greeting: String[64]
+greeting: public(String[100]) 
 
-@external
-def __init__(_greeting: String[64]):
-    """
-    @dev Contract constructor.
-    """
-    self.owner = msg.sender
-    self.greeting = _greeting
+@external 
+def __init__(): 
+    self.greeting = "Hello World!" 
 
-
-@view
-@external
-def greet() -> String[64]:
+@external 
+def greet() -> String[100]: 
     return self.greeting
 
-
-@external
-def setGreeting(_greeting: String[64]):
-    assert self.owner == msg.sender
-    self.greeting = _greeting
+@external 
+def set_greeting( _greet: String[100]): 
+    self.greeting = _greet 
