@@ -8,6 +8,7 @@ def __init__():
     self.greeting = "Hello World!" 
 
 @external 
+@view
 def greet() -> String[100]: 
     return self.greeting
 

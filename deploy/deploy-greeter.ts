@@ -25,8 +25,7 @@ export default async function (hre: HardhatRuntimeEnvironment) {
   const artifact = await deployer.loadArtifact("Greeter");
 
   // Estimate contract deployment fee
-  const greeting = "Hi there!";
-  const deploymentFee = await deployer.estimateDeployFee(artifact, [greeting]);
+  const deploymentFee = await deployer.estimateDeployFee(artifact, []);
 
   // ⚠️ OPTIONAL: You can skip this block if your account already has funds in L2
   // Deposit funds to L2
@@ -43,14 +42,28 @@ export default async function (hre: HardhatRuntimeEnvironment) {
   const parsedFee = ethers.utils.formatEther(deploymentFee.toString());
   console.log(`The deployment is estimated to cost ${parsedFee} ETH`);
 
-  const greeterContract = await deployer.deploy(artifact, [greeting]);
+  const greeterContract = await deployer.deploy(artifact, []);
 
   //obtain the Constructor Arguments
-  console.log(
-    "Constructor args:" + greeterContract.interface.encodeDeploy([greeting])
-  );
+  console.log("Constructor args:" + greeterContract.interface.encodeDeploy([]));
 
   // Show the contract info.
   const contractAddress = greeterContract.address;
   console.log(`${artifact.contractName} was deployed to ${contractAddress}`);
+
+  // verify contract for tesnet & mainnet
+  if (process.env.NODE_ENV != "test") {
+    // Contract MUST be fully qualified name (e.g. path/sourceName:contractName)
+    const contractFullyQualifedName = "contracts/Greeter.sol:Greeter";
+
+    // Verify contract programmatically
+    const verificationId = await hre.run("verify:verify", {
+      address: contractAddress,
+      contract: contractFullyQualifedName,
+      constructorArguments: [],
+      bytecode: artifact.bytecode,
+    });
+  } else {
+    console.log(`Contract not verified, deployed locally.`);
+  }
 }

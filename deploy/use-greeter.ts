@@ -40,7 +40,7 @@ export default async function (hre: HardhatRuntimeEnvironment) {
 
   // send transaction to update the message
   const newMessage = "Hello people!";
-  const tx = await contract.setGreeting(newMessage);
+  const tx = await contract.set_greeting(newMessage);
 
   console.log(`Transaction to change the message is ${tx.hash}`);
   await tx.wait();
