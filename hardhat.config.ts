@@ -1,36 +1,40 @@
-import "@nomiclabs/hardhat-vyper";
 import { HardhatUserConfig } from "hardhat/config";
 
+import "@nomiclabs/hardhat-vyper";
 import "@matterlabs/hardhat-zksync-vyper";
+import "@matterlabs/hardhat-zksync-node";
 import "@matterlabs/hardhat-zksync-deploy";
 
-import "@matterlabs/hardhat-zksync-verify";
-
-// dynamically changes endpoints for local tests
-export const zkSyncTestnet =
-  process.env.NODE_ENV == "test"
-    ? {
-        url: "http://127.0.0.1:8011",
-        ethNetwork: "http://127.0.0.1:8545",
-        zksync: true,
-      }
-    : {
-        url: "https://zksync2-testnet.zksync.dev",
-        ethNetwork: "goerli",
-        zksync: true,
-      };
-
 const config: HardhatUserConfig = {
+  defaultNetwork: "dockerizedNode",
+  networks: {
+    zkSyncEraTestnet: {
+      url: "https://testnet.era.zksync.dev",
+      ethNetwork: "goerli",
+      zksync: true,
+    },
+    zkSyncEraMainnet: {
+      url: "https://mainnet.era.zksync.io",
+      ethNetwork: "mainnet",
+      zksync: true,
+    },
+    dockerizedNode: {
+      url: "http://localhost:3050",
+      ethNetwork: "localhost",
+      zksync: true,
+    },
+    inMemoryNode: {
+      url: "http://localhost:8011",
+      ethNetwork: "localhost",
+      zksync: true,
+    },
+    hardhat: {
+      zksync: true,
+    },
+  },
   zkvyper: {
     version: "latest",
     settings: {},
-  },
-  defaultNetwork: "zkSyncTestnet",
-  networks: {
-    hardhat: {
-      zksync: false,
-    },
-    zkSyncTestnet,
   },
   // Currently, only Vyper 0.3.3 or 0.3.9 are supported.
   vyper: {

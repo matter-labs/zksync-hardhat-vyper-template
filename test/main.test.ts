@@ -1,33 +1,23 @@
-import { expect } from "chai";
-import { Wallet, Provider, Contract } from "zksync-web3";
-import * as hre from "hardhat";
-import { Deployer } from "@matterlabs/hardhat-zksync-deploy";
-import { zkSyncTestnet } from "../hardhat.config";
+import { expect } from 'chai';
+import { getWallet, deployContract } from '../deploy/utils';
 
-// wallet key from docker node
-const RICH_WALLET_PK =
-  "0x7726827caac94a7f9e1b160f7ea819f172f7b6f9d2a97f992c38edeab82d4110";
+const RICH_WALLET_PK = '0x7726827caac94a7f9e1b160f7ea819f172f7b6f9d2a97f992c38edeab82d4110';
 
-async function deployGreeter(deployer: Deployer): Promise<Contract> {
-  const artifact = await deployer.loadArtifact("Greeter");
-  return await deployer.deploy(artifact, []);
-}
-
-describe("Greeter", function () {
+describe('Greeter', function () {
   it("Should return the new greeting once it's changed", async function () {
-    const provider = new Provider(zkSyncTestnet.url);
+    const wallet = getWallet(RICH_WALLET_PK);
 
-    const wallet = new Wallet(RICH_WALLET_PK, provider);
-    const deployer = new Deployer(hre, wallet);
+    const greeting = "Hello world!";
+    const greeter = await deployContract("Greeter", [greeting], { wallet, silent: true });
 
-    const greeter = await deployGreeter(deployer);
+    expect(await greeter.greet()).to.eq(greeting);
 
-    expect(await greeter.greet()).to.eq("Hello World!");
-
-    const setGreetingTx = await greeter.set_greeting("Hola, mundo!");
+    const newGreeting = "Hola, mundo!";
+    const setGreetingTx = await greeter.set_greeting(newGreeting);
+    
     // wait until the transaction is mined
     await setGreetingTx.wait();
 
-    expect(await greeter.greet()).to.equal("Hola, mundo!");
+    expect(await greeter.greet()).to.equal(newGreeting);
   });
 });
