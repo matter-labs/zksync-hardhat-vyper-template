@@ -1,14 +1,19 @@
-import { HardhatUserConfig } from "hardhat/config";
-
 import "@nomiclabs/hardhat-vyper";
 import "@matterlabs/hardhat-zksync-vyper";
 import "@matterlabs/hardhat-zksync-node";
 import "@matterlabs/hardhat-zksync-deploy";
 
+import { HardhatUserConfig } from "hardhat/config";
+
 const config: HardhatUserConfig = {
-  defaultNetwork: "zkSyncTestnet",
+  defaultNetwork: "zkSyncTestnetSepolia",
   networks: {
-    zkSyncTestnet: {
+    zkSyncTestnetSepolia: {
+      url: "https://sepolia.era.zksync.dev",
+      ethNetwork: "sepolia",
+      zksync: true,
+    },
+    zkSyncTestnetGoerli: {
       url: "https://testnet.era.zksync.dev",
       ethNetwork: "goerli",
       zksync: true,
